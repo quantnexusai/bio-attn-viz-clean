@@ -1,0 +1,12 @@
+# Python virtual environments
+bio_env/
+fresh_env/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.env
