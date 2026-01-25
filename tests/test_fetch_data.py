@@ -2,8 +2,6 @@
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 
 class TestFetchPubmedAbstract:
     """Tests for the fetch_pubmed_abstract function."""

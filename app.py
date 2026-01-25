@@ -28,13 +28,13 @@ def detect_entities(text: str) -> list[tuple[str, str]]:
         List of (entity_name, entity_type) tuples.
     """
     entities = []
-    
+
     for entity_type, patterns in ENTITY_PATTERNS.items():
         for pattern in patterns:
             for match in re.finditer(pattern, text):
                 if len(match.group()) > 2:  # Filter out short matches
                     entities.append((match.group(), entity_type))
-    
+
     # Remove duplicates
     unique_entities = []
     seen = set()
@@ -42,7 +42,7 @@ def detect_entities(text: str) -> list[tuple[str, str]]:
         if entity not in seen:
             seen.add(entity)
             unique_entities.append((entity, entity_type))
-    
+
     return unique_entities
 
 
@@ -56,7 +56,7 @@ def load_model() -> BioBERTAttention:
 def main() -> None:
     st.title("BioBERT Attention Visualization Tool")
     st.write("Explore attention patterns in BioBERT for biomedical text.")
-    
+
     # Initialize model
     with st.spinner("Loading BioBERT model..."):
         try:
@@ -65,13 +65,15 @@ def main() -> None:
         except Exception as e:
             st.error(f"Error loading model: {e}")
             st.stop()
-    
+
     # Input options
     st.subheader("Input Text")
     input_option = st.radio("Choose Input Method:", ["Enter Text", "Fetch from PubMed"])
-    
+
     if input_option == "Enter Text":
-        text = st.text_area("Enter biomedical text:", "TP53 mutations are associated with breast cancer.")
+        text = st.text_area(
+            "Enter biomedical text:", "TP53 mutations are associated with breast cancer."
+        )
     else:
         query = st.text_input("PubMed Search Query:", "TP53 breast cancer")
         if st.button("Fetch Abstract"):
@@ -79,7 +81,7 @@ def main() -> None:
             st.text_area("Fetched Abstract:", text, height=200)
         else:
             text = "TP53 mutations are associated with breast cancer."
-    
+
     # Visualization settings
     st.subheader("Visualization Settings")
     col1, col2, col3 = st.columns([1, 1, 1])
@@ -89,7 +91,7 @@ def main() -> None:
         head = st.slider("Attention Head:", 0, 11, 0)
     with col3:
         avg_attention = st.checkbox("Show Average Attention")
-    
+
     # Visualization
     if st.button("Visualize Attention"):
         with st.spinner("Generating visualization..."):
@@ -100,20 +102,22 @@ def main() -> None:
                 else:
                     tokens, attentions = model.get_attention_weights(text, layer=layer, head=head)
                     title = f"Attention (Layer {layer}, Head {head})"
-                
+
                 if tokens and isinstance(attentions, np.ndarray) and attentions.size > 0:
                     fig = plot_attention_heatmap(tokens, attentions, title=title)
                     st.plotly_chart(fig, use_container_width=True)
                 else:
-                    st.error("Could not generate attention visualization: No valid tokens or attention data.")
+                    st.error(
+                        "Could not generate attention visualization: No valid tokens or attention data."
+                    )
             except Exception as e:
                 st.error(f"Error generating visualization: {str(e)}")
-    
+
     # Entity detection
     if st.button("Detect Biomedical Entities"):
         try:
             entities = detect_entities(text)
-            
+
             if entities:
                 st.subheader("Detected Entities")
                 for entity, entity_type in entities:
@@ -122,6 +126,7 @@ def main() -> None:
                 st.write("No biomedical entities detected.")
         except Exception as e:
             st.error(f"Error detecting entities: {str(e)}")
+
 
 if __name__ == "__main__":
     main()

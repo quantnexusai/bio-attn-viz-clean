@@ -16,9 +16,7 @@ class BioBERTAttention:
             model_name: HuggingFace model identifier for BioBERT variant.
         """
         self.tokenizer: PreTrainedTokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model: PreTrainedModel = AutoModel.from_pretrained(
-            model_name, output_attentions=True
-        )
+        self.model: PreTrainedModel = AutoModel.from_pretrained(model_name, output_attentions=True)
         self.model.eval()
 
     def get_attention_weights(
@@ -44,9 +42,7 @@ class BioBERTAttention:
 
         return tokens, attentions
 
-    def get_average_attention(
-        self, text: str
-    ) -> tuple[list[str], npt.NDArray[np.float32]]:
+    def get_average_attention(self, text: str) -> tuple[list[str], npt.NDArray[np.float32]]:
         """Get average attention across all layers and heads.
 
         Args:

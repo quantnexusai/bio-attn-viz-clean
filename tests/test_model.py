@@ -7,7 +7,6 @@ which would be slow and require significant memory/disk space.
 from unittest.mock import MagicMock, patch
 
 import numpy as np
-import pytest
 import torch
 
 
@@ -27,7 +26,7 @@ class TestBioBERTAttention:
 
         from model import BioBERTAttention
 
-        bio_bert = BioBERTAttention()
+        BioBERTAttention()  # noqa: F841
 
         mock_tokenizer_class.from_pretrained.assert_called_once()
         mock_model_class.from_pretrained.assert_called_once()
@@ -47,7 +46,7 @@ class TestBioBERTAttention:
         from model import BioBERTAttention
 
         custom_model = "custom/model-name"
-        bio_bert = BioBERTAttention(model_name=custom_model)
+        BioBERTAttention(model_name=custom_model)  # noqa: F841
 
         mock_tokenizer_class.from_pretrained.assert_called_with(custom_model)
 

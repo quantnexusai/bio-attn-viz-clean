@@ -1,7 +1,5 @@
 """Tests for entity detection functionality in app.py."""
 
-import pytest
-
 # Import the function and patterns from app.py
 import sys
 from pathlib import Path
@@ -40,7 +38,6 @@ class TestDetectEntities:
         text = "Breast cancer and heart disease are common conditions."
         entities = detect_entities(text)
 
-        entity_names = [e[0] for e in entities]
         entity_types = [e[1] for e in entities]
 
         # Should detect disease patterns
@@ -51,9 +48,6 @@ class TestDetectEntities:
         text = "Trastuzumab and rituximab are monoclonal antibodies."
         entities = detect_entities(text)
 
-        entity_names = [e[0] for e in entities]
-        entity_types = [e[1] for e in entities]
-
         # Should detect drug patterns (ending in -mab)
         drug_entities = [e for e in entities if e[1] == "DRUG"]
         assert len(drug_entities) > 0
@@ -63,7 +57,6 @@ class TestDetectEntities:
         text = "Insulin and kinase are important proteins."
         entities = detect_entities(text)
 
-        entity_names = [e[0] for e in entities]
         entity_types = [e[1] for e in entities]
 
         # Should detect protein patterns
@@ -105,7 +98,7 @@ class TestDetectEntities:
         """Test detection of multiple entity types in one text."""
         entities = detect_entities(sample_biomedical_text)
 
-        entity_types = set(e[1] for e in entities)
+        entity_types = {e[1] for e in entities}
         # Should detect at least 2 different entity types
         assert len(entity_types) >= 1
 
