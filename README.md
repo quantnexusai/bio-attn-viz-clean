@@ -1,5 +1,10 @@
 # BioBERT Attention Visualization Tool
 
+[![Version](https://img.shields.io/github/v/release/quantnexusai/bio-attn-viz-clean)](https://github.com/quantnexusai/bio-attn-viz-clean/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/quantnexusai/bio-attn-viz-clean/actions/workflows/ci.yml/badge.svg)](https://github.com/quantnexusai/bio-attn-viz-clean/actions/workflows/ci.yml)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+
 An interactive web application for visualizing attention mechanisms in BioBERT on biomedical text. This tool helps researchers and practitioners understand how transformer models process biomedical language by providing intuitive visualizations of attention patterns.
 
 ![BioBERT Attention Screenshot](screenshots/app_screenshot.png)
