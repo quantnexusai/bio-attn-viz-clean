@@ -5,7 +5,6 @@ Analyze how BioBERT attends to biomedical text via AI assistants.
 
 import json
 import re
-from functools import lru_cache
 
 import gradio as gr
 import numpy as np
@@ -27,7 +26,6 @@ def get_model():
     """Lazy load BioBERT model."""
     global _model
     if _model is None:
-        import torch
         from transformers import AutoModel, AutoTokenizer
 
         model_name = "dmis-lab/biobert-base-cased-v1.1"
@@ -97,14 +95,14 @@ def analyze_attention(
     Returns:
         JSON with tokens, attention matrix, and detected entities
     """
-    import torch
-
     if not text or not text.strip():
         return json.dumps({"error": "Please provide text to analyze"}, indent=2)
 
     text = text.strip()
 
     try:
+        import torch
+
         tokenizer, model = get_model()
 
         # Tokenize
