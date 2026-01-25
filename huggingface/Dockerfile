@@ -17,17 +17,11 @@ RUN pip install --no-cache-dir \
     numpy>=1.23.0 \
     requests>=2.28.0
 
-# Pre-download BioBERT model to cache it in the image
-RUN python -c "from transformers import AutoModel, AutoTokenizer; \
-    AutoTokenizer.from_pretrained('dmis-lab/biobert-base-cased-v1.1'); \
-    AutoModel.from_pretrained('dmis-lab/biobert-base-cased-v1.1')"
-
-# Copy application
-COPY app.py .
-
 # Create non-root user for HF Spaces
 RUN useradd -m -u 1000 user
-USER user
+
+# Create cache directory with correct permissions
+RUN mkdir -p /app/.cache && chown -R user:user /app/.cache
 
 # Environment variables
 ENV GRADIO_SERVER_NAME="0.0.0.0"
@@ -35,6 +29,20 @@ ENV GRADIO_SERVER_PORT="7860"
 ENV GRADIO_MCP_SERVER="true"
 ENV TRANSFORMERS_CACHE="/app/.cache"
 ENV HF_HOME="/app/.cache"
+
+# Pre-download BioBERT model as root (before USER switch)
+RUN python -c "from transformers import AutoModel, AutoTokenizer; \
+    AutoTokenizer.from_pretrained('dmis-lab/biobert-base-cased-v1.1'); \
+    AutoModel.from_pretrained('dmis-lab/biobert-base-cased-v1.1')"
+
+# Fix ownership of downloaded model
+RUN chown -R user:user /app/.cache
+
+# Copy application
+COPY app.py .
+
+# Switch to non-root user
+USER user
 
 EXPOSE 7860
 
