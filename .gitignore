@@ -3,10 +3,48 @@ bio_env/
 fresh_env/
 venv/
 env/
+.venv/
+
+# Python bytecode
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
 *.so
+
+# Environment variables
 .env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+
+# Type checking
+.mypy_cache/
+
+# Build
+build/
+dist/
+*.egg-info/
+*.egg
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Model cache (can be large)
+.cache/
+*.pt
+*.bin

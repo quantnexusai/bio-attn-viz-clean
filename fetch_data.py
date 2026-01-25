@@ -1,9 +1,20 @@
+"""PubMed abstract fetching utilities."""
+
 import requests
 import streamlit as st
 
+
 @st.cache_data
-def fetch_pubmed_abstract(query, max_results=1):
-    """Fetch abstracts from PubMed via the EuropePMC API"""
+def fetch_pubmed_abstract(query: str, max_results: int = 1) -> str:
+    """Fetch abstracts from PubMed via the EuropePMC API.
+
+    Args:
+        query: Search query for PubMed.
+        max_results: Maximum number of results to fetch.
+
+    Returns:
+        Abstract text or error message.
+    """
     api_url = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
     
     params = {

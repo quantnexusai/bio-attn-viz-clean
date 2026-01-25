@@ -1,20 +1,32 @@
-import streamlit as st
+"""BioBERT Attention Visualization Tool - Main Streamlit Application."""
+
 import re
+
 import numpy as np
+import streamlit as st
+
+from fetch_data import fetch_pubmed_abstract
 from model import BioBERTAttention
 from visualize import plot_attention_heatmap
-from fetch_data import fetch_pubmed_abstract
 
 # Simple entity detection patterns
-ENTITY_PATTERNS = {
-    "GENE": [r'\b[A-Z][A-Z0-9]{1,5}\b', r'\b[A-Z][a-z]{1,}[0-9]\b'],
-    "PROTEIN": [r'\b[A-Z][a-z]{2,}(in|ase)\b', r'\b[A-Z][a-z]+[A-Z][a-z]+\b'],
-    "DISEASE": [r'\b[Cc]ancer\b', r'\b[Dd]isease\b', r'\b[Tt]umou?r\b', r'\b[Ss]yndrome\b'],
-    "DRUG": [r'\b[A-Za-z]+(mab|zumab|ximab)\b', r'\b[A-Za-z]+(olol|asone|idine)\b']
+ENTITY_PATTERNS: dict[str, list[str]] = {
+    "GENE": [r"\b[A-Z][A-Z0-9]{1,5}\b", r"\b[A-Z][a-z]{1,}[0-9]\b"],
+    "PROTEIN": [r"\b[A-Z][a-z]{2,}(in|ase)\b", r"\b[A-Z][a-z]+[A-Z][a-z]+\b"],
+    "DISEASE": [r"\b[Cc]ancer\b", r"\b[Dd]isease\b", r"\b[Tt]umou?r\b", r"\b[Ss]yndrome\b"],
+    "DRUG": [r"\b[A-Za-z]+(mab|zumab|ximab)\b", r"\b[A-Za-z]+(olol|asone|idine)\b"],
 }
 
-def detect_entities(text):
-    """Simple rule-based entity detection"""
+
+def detect_entities(text: str) -> list[tuple[str, str]]:
+    """Simple rule-based entity detection.
+
+    Args:
+        text: Input text to scan for biomedical entities.
+
+    Returns:
+        List of (entity_name, entity_type) tuples.
+    """
     entities = []
     
     for entity_type, patterns in ENTITY_PATTERNS.items():
@@ -33,12 +45,15 @@ def detect_entities(text):
     
     return unique_entities
 
+
 # Cache the model loading to improve performance
 @st.cache_resource
-def load_model():
+def load_model() -> BioBERTAttention:
+    """Load and cache the BioBERT model."""
     return BioBERTAttention()
 
-def main():
+
+def main() -> None:
     st.title("BioBERT Attention Visualization Tool")
     st.write("Explore attention patterns in BioBERT for biomedical text.")
     

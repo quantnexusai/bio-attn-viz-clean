@@ -1,7 +1,15 @@
-import plotly.graph_objects as go
-import numpy as np
+"""Visualization utilities for attention heatmaps."""
 
-def plot_attention_heatmap(tokens, attention_weights, title="Attention Heatmap"):
+import numpy as np
+import numpy.typing as npt
+import plotly.graph_objects as go
+
+
+def plot_attention_heatmap(
+    tokens: list[str],
+    attention_weights: npt.NDArray[np.float32],
+    title: str = "Attention Heatmap",
+) -> go.Figure:
     """Create interactive attention heatmap using Plotly"""
     # Filter out padding tokens
     filtered_tokens = []
