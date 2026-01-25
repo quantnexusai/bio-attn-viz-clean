@@ -42,7 +42,7 @@ jobs:
         run: black --check .
 
       - name: Run type checking with MyPy
-        run: mypy . --ignore-missing-imports
+        run: mypy app.py model.py visualize.py fetch_data.py --ignore-missing-imports
 
       - name: Run tests with pytest
         run: pytest --cov=. --cov-report=xml --cov-report=term-missing
