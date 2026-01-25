@@ -70,7 +70,10 @@ class TestPlotAttentionHeatmap:
     def test_colorscale_is_viridis(
         self, sample_tokens: list[str], sample_attention_weights: np.ndarray
     ) -> None:
-        """Test that the colorscale is Viridis."""
+        """Test that the colorscale uses Viridis colors."""
         fig = plot_attention_heatmap(sample_tokens, sample_attention_weights)
 
-        assert fig.data[0].colorscale == "Viridis"
+        # Plotly expands "Viridis" to actual color values
+        # Check that the first color is Viridis purple (#440154)
+        colorscale = fig.data[0].colorscale
+        assert colorscale[0][1] == "#440154"  # Viridis starts with this purple
