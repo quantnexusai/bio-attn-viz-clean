@@ -22,10 +22,5 @@ repos:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0
-    hooks:
-      - id: mypy
-        additional_dependencies:
-          - types-requests
-        args: [--ignore-missing-imports]
+  # Note: mypy disabled due to PyTorch using Python 3.10+ syntax internally
+  # Run manually on Python 3.10+: mypy app.py model.py visualize.py fetch_data.py
