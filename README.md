@@ -21,6 +21,53 @@ An interactive web application for visualizing attention mechanisms in BioBERT o
 
 Try out the live demo: [BioBERT Attention Visualization Tool](https://bio-attn-viz.streamlit.app/)
 
+## MCP Server (AI Assistant Integration)
+
+BioBERT Attention Analyzer is available as an MCP (Model Context Protocol) server, allowing AI assistants like Claude to analyze biomedical text attention patterns.
+
+**MCP Endpoint:** `https://quantnexusai-bio-attn-viz.hf.space/gradio_api/mcp/sse`
+
+### Adding to Claude
+
+**Claude.ai (Web) - Pro/Team users:**
+1. Go to **Settings** > **Integrations**
+2. Click **Add Custom Connector**
+3. Enter the MCP URL:
+   ```
+   https://quantnexusai-bio-attn-viz.hf.space/gradio_api/mcp/sse
+   ```
+4. Save and refresh
+
+**Claude Desktop:**
+1. Open Settings > **Integrations**
+2. Add the same MCP URL as above
+3. Restart Claude Desktop
+
+### Example Queries
+
+Once connected, you can ask Claude:
+- "How does BioBERT attend to 'TP53' in this text about breast cancer?"
+- "Analyze the attention pattern for: BRCA1 mutations increase cancer risk"
+- "What biomedical entities are in this PubMed abstract about Alzheimer's?"
+- "Show me the average attention across all layers for this gene expression text"
+
+### MCP Response Data
+
+The MCP server returns:
+- **tokens**: Tokenized input text
+- **attention_matrix**: Full attention weights (layer × head)
+- **high_attention_pairs**: Top 5 token pairs with highest attention
+- **entities_detected**: Genes, proteins, diseases, drugs found in text
+- **attention_stats**: Mean, max, min attention values
+
+### Other MCP-Compatible AI Assistants
+
+Works with any MCP-compatible client:
+- **Claude** (Web & Desktop)
+- **Cursor**
+- **Continue.dev**
+- **Custom agents** via [MCP SDK](https://github.com/modelcontextprotocol/sdk)
+
 ## How It Works
 
 This tool uses the BioBERT model, a domain-specific language model pre-trained on biomedical text. When you input biomedical text, the application:
