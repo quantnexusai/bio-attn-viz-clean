@@ -47,12 +47,14 @@ def detect_entities(text: str) -> list[dict]:
                 entity = match.group()
                 if len(entity) > 2 and entity not in seen:
                     seen.add(entity)
-                    entities.append({
-                        "entity": entity,
-                        "type": entity_type,
-                        "start": match.start(),
-                        "end": match.end()
-                    })
+                    entities.append(
+                        {
+                            "entity": entity,
+                            "type": entity_type,
+                            "start": match.start(),
+                            "end": match.end(),
+                        }
+                    )
 
     return entities
 
@@ -77,12 +79,7 @@ def fetch_pubmed_abstract(query: str) -> str:
         return f"Error fetching abstract: {e}"
 
 
-def analyze_attention(
-    text: str,
-    layer: int = 0,
-    head: int = 0,
-    use_average: bool = False
-) -> str:
+def analyze_attention(text: str, layer: int = 0, head: int = 0, use_average: bool = False) -> str:
     """
     Analyze BioBERT attention patterns for biomedical text.
 
@@ -143,11 +140,13 @@ def analyze_attention(
             for idx in flat_indices:
                 i, j = divmod(idx, attention_subset.shape[1])
                 if i < len(filtered_tokens) and j < len(filtered_tokens):
-                    high_attention_pairs.append({
-                        "from_token": filtered_tokens[i],
-                        "to_token": filtered_tokens[j],
-                        "attention_score": round(float(attention_subset[i, j]), 4)
-                    })
+                    high_attention_pairs.append(
+                        {
+                            "from_token": filtered_tokens[i],
+                            "to_token": filtered_tokens[j],
+                            "attention_score": round(float(attention_subset[i, j]), 4),
+                        }
+                    )
 
         result = {
             "success": True,
@@ -163,8 +162,8 @@ def analyze_attention(
             "attention_stats": {
                 "mean": round(float(attention_subset.mean()), 4),
                 "max": round(float(attention_subset.max()), 4),
-                "min": round(float(attention_subset.min()), 4)
-            }
+                "min": round(float(attention_subset.min()), 4),
+            },
         }
 
         return json.dumps(result, indent=2)
@@ -190,7 +189,8 @@ def analyze_text_direct(text: str, layer: int, head: int, use_average: bool) -> 
 
 # Create Gradio interface
 with gr.Blocks(title="BioBERT Attention Analyzer") as demo:
-    gr.Markdown("""
+    gr.Markdown(
+        """
 # BioBERT Attention Analyzer
 
 Visualize and analyze how BioBERT attends to biomedical text.
@@ -198,14 +198,15 @@ Explore attention patterns across 12 layers and 12 attention heads.
 
 [GitHub](https://github.com/quantnexusai/bio-attn-viz-clean) |
 [Streamlit Demo](https://bio-attn-viz.streamlit.app/)
-    """)
+    """
+    )
 
     with gr.Tab("Analyze Text"):
         text_input = gr.Textbox(
             label="Biomedical Text",
             placeholder="Enter biomedical text (e.g., 'TP53 mutations are associated with breast cancer.')",
             lines=4,
-            value="TP53 mutations are associated with breast cancer progression and poor prognosis."
+            value="TP53 mutations are associated with breast cancer progression and poor prognosis.",
         )
 
         with gr.Row():
@@ -220,14 +221,14 @@ Explore attention patterns across 12 layers and 12 attention heads.
         analyze_btn.click(
             fn=analyze_text_direct,
             inputs=[text_input, layer_slider, head_slider, avg_checkbox],
-            outputs=output_json
+            outputs=output_json,
         )
 
     with gr.Tab("PubMed Search"):
         query_input = gr.Textbox(
             label="PubMed Query",
             placeholder="Search PubMed (e.g., 'BRCA1 breast cancer')",
-            value="TP53 breast cancer"
+            value="TP53 breast cancer",
         )
 
         with gr.Row():
@@ -243,7 +244,7 @@ Explore attention patterns across 12 layers and 12 attention heads.
         fetch_btn.click(
             fn=process_pubmed_query,
             inputs=[query_input, pm_layer, pm_head, pm_avg],
-            outputs=[abstract_output, pm_json_output]
+            outputs=[abstract_output, pm_json_output],
         )
 
     with gr.Tab("Entity Detection"):
@@ -251,7 +252,7 @@ Explore attention patterns across 12 layers and 12 attention heads.
             label="Text for Entity Detection",
             placeholder="Enter biomedical text...",
             lines=4,
-            value="The BRCA1 gene mutations increase breast cancer risk. Trastuzumab is used for HER2-positive tumors."
+            value="The BRCA1 gene mutations increase breast cancer risk. Trastuzumab is used for HER2-positive tumors.",
         )
 
         detect_btn = gr.Button("Detect Entities", variant="primary")
@@ -262,13 +263,10 @@ Explore attention patterns across 12 layers and 12 attention heads.
             entities = detect_entities(text)
             return json.dumps({"entities": entities, "count": len(entities)}, indent=2)
 
-        detect_btn.click(
-            fn=detect_entities_json,
-            inputs=entity_input,
-            outputs=entity_output
-        )
+        detect_btn.click(fn=detect_entities_json, inputs=entity_input, outputs=entity_output)
 
-    gr.Markdown("""
+    gr.Markdown(
+        """
 ---
 **About BioBERT Attention Analyzer**
 
@@ -281,7 +279,8 @@ processes biomedical text by visualizing attention patterns.
 - Detect biomedical entities (genes, proteins, diseases, drugs)
 
 MIT License | Built with PyTorch, Transformers, and Gradio
-    """)
+    """
+    )
 
 
 if __name__ == "__main__":
