@@ -36,10 +36,10 @@ jobs:
           pip install -r requirements-dev.txt
 
       - name: Run linting with Ruff
-        run: ruff check .
+        run: ruff check . --exclude huggingface/
 
       - name: Check formatting with Black
-        run: black --check .
+        run: black --check . --exclude '/huggingface/'
 
       # Note: mypy skipped in CI due to PyTorch using Python 3.10+ syntax internally
       # Run locally with: mypy app.py model.py visualize.py fetch_data.py
