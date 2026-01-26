@@ -47,14 +47,7 @@ def detect_entities(text: str) -> list[dict]:
                 entity = match.group()
                 if len(entity) > 2 and entity not in seen:
                     seen.add(entity)
-                    entities.append(
-                        {
-                            "entity": entity,
-                            "type": entity_type,
-                            "start": match.start(),
-                            "end": match.end(),
-                        }
-                    )
+                    entities.append({"name": entity, "type": entity_type})
 
     return entities
 
@@ -133,36 +126,31 @@ def analyze_attention(text: str, layer: int = 0, head: int = 0, use_average: boo
         # Detect entities
         entities = detect_entities(text)
 
-        # Find high-attention pairs
+        # Find high-attention pairs (top 10 for better insights)
         high_attention_pairs = []
         if attention_subset.size > 0:
-            flat_indices = np.argsort(attention_subset.flatten())[-5:][::-1]
+            flat_indices = np.argsort(attention_subset.flatten())[-10:][::-1]
             for idx in flat_indices:
                 i, j = divmod(idx, attention_subset.shape[1])
                 if i < len(filtered_tokens) and j < len(filtered_tokens):
                     high_attention_pairs.append(
                         {
-                            "from_token": filtered_tokens[i],
-                            "to_token": filtered_tokens[j],
-                            "attention_score": round(float(attention_subset[i, j]), 4),
+                            "from": filtered_tokens[i],
+                            "to": filtered_tokens[j],
+                            "score": round(float(attention_subset[i, j]), 4),
                         }
                     )
 
+        # Return compact summary (no full matrix - too large for AI assistants)
         result = {
             "success": True,
-            "title": title,
-            "input_text": text,
-            "tokens": filtered_tokens,
+            "analysis": title,
             "num_tokens": len(filtered_tokens),
-            "layer": layer if not use_average else "all",
-            "head": head if not use_average else "all",
-            "high_attention_pairs": high_attention_pairs,
-            "entities_detected": entities,
-            "attention_matrix": attention_subset.tolist(),
-            "attention_stats": {
+            "entities": entities,
+            "top_attention_pairs": high_attention_pairs,
+            "stats": {
                 "mean": round(float(attention_subset.mean()), 4),
                 "max": round(float(attention_subset.max()), 4),
-                "min": round(float(attention_subset.min()), 4),
             },
         }
 
